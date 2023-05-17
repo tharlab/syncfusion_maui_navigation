@@ -1,0 +1,294 @@
+﻿@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Buttons
+@*@using Syncfusion.Blazor.DropDowns*@
+@inherits LayoutComponentBase
+
+@*ref adopted from:
+-https://blazor.syncfusion.com/documentation/sidebar/auto-close
+-https://blazor.syncfusion.com/demos/sidebar/api?theme=bootstrap4
+-https://blazor.syncfusion.com/documentation/sidebar/how-to/open-and-close-the-sidebar
+-https://www.syncfusion.com/forums/153610/side-bar-height-not-100*@
+
+
+
+<div id="header" style="height:45px;color:white;background-color:midnightblue;font-size:1.2rem;line-height:45px;">
+    
+        <button title="Navigation menu" class="navbar navbar-dark navbar-toggler" @onclick="@ToggleBtnClick" style="position:absolute; margin:7px;">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        @*<span id="hamburger" @onclick="@ToggleBtnClick" class="e-icons e-menu e-large" style="position:absolute; margin:7px; font-size: 35px;"></span>*@
+    
+    <span style="margin-left:45%;">DarulBayan</span>
+</div>
+
+
+@*Initialize the Sidebar Component*@
+<SfSidebar HtmlAttributes="@HtmlAttribute" MediaQuery="(min-width:600px)" Width="230px" Target=".maincontent" CloseOnDocumentClick="@CloseOnDocumentClick" ShowBackdrop="@ShowBackdrop" Position="@Position" Type="@Type" @bind-IsOpen="SidebarToggle">
+    <ChildContent>
+
+
+        <div class="sidebar">
+            <span id="close" class="e-icons" @onclick="@Close"></span>
+            <SfButton @onclick="Close" CssClass="e-btn close-btn">Close Sidebar</SfButton>
+            <NavMenu /></div>
+
+
+    </ChildContent>
+</SfSidebar>
+
+<div class="text-content" style="text-align: center;">@Body</div>
+
+
+
+<footer class="bg-light text-center text-lg-start fixed-bottom mt-5">
+    <div class="text-center small p-1 text-secondary" style="background-color: rgba(0, 0, 0, 0.2);">
+        Designed by Team: XI IPA darulbayan © 2023 All Rights Reserved. 
+    </div>
+</footer>
+
+
+
+@code {
+    // Sepcify the Index value of Dropdown List component. 
+    private int? Index { get; set; } = 0;
+    // Specify the reference of Position button element.
+    SfButton PositionElement;
+    // Specify the reference of Document Click button element.
+    SfButton DocumentclickElement;
+    // Specify the reference of BackDrop button element.
+    SfButton BackDropElement;
+    // Specify the value of Sidebar component CloseOnDocumentClick property.
+    public bool CloseOnDocumentClick = true;
+    // Specify the value of Sidebar component ShowBackdrop property.
+    public bool ShowBackdrop = false;
+    // Specify the value of Position Button component content property.
+    public string Content = "Left";
+    // Specify the value of BackDrop Button component content property.
+    public string Backcontent = "False";
+    // Specify the value of DocumentClick Button component content property.
+    public string DocContent = "False";
+    // Specify the value of Sidebar component position property.
+    public SidebarPosition Position { get; set; } = SidebarPosition.Left;
+    // Specify the value of Sidebar component type property.
+    public SidebarType Type { get; set; } = SidebarType.Over;
+    // Specify the value of Sidebar component state. It indicates whether the sidebar component is in an open/close state.
+    public bool SidebarToggle = false;
+    // Specify the value of Sidebar component HTMLAttribute property.
+    Dictionary<string, object> HtmlAttribute = new Dictionary<string, object>()
+    {
+        {"class", "default-sidebar" }
+    };
+    public class typeData
+    {
+        public string text { get; set; }
+    }
+    //Specify the value of Dropdown List DataSource property.
+    private List<typeData> Data { get; set; } = new List<typeData>
+    {
+        new typeData { text = "Push" },
+        new typeData { text = "Over" },
+        new typeData { text = "Auto" }
+    };
+    // Specifies the event handler for Clicked event in Toolbar component. It's used to open/close the Sidebar component. 
+    private void ToggleBtnClick()
+    {
+        SidebarToggle = !SidebarToggle;
+    }
+    // Specifies the event handler for Clicked event in Position Button component. 
+    private void PositionBtnClick()
+    {
+        if (PositionElement.Content == "Right")
+        {
+            Content = "Left";
+            Position = SidebarPosition.Left;
+        }
+        else
+        {
+            Content = "Right";
+            Position = SidebarPosition.Right;
+        }
+        StateHasChanged();
+    }
+    // Specifies the event handler for Clicked event in DocumentOnClick Button component. 
+    private void DocBtnClick()
+    {
+        if (DocumentclickElement.Content == "False")
+        {
+            DocContent = "True";
+            CloseOnDocumentClick = true;
+        }
+        else
+        {
+            DocContent = "False";
+            CloseOnDocumentClick = false;
+        }
+        StateHasChanged();
+    }
+    // Specifies the event handler for Clicked event in BackDrop Button component. 
+    private void BackBtnClick()
+    {
+        if (this.BackDropElement.Content == "True")
+        {
+            Backcontent = "False";
+            ShowBackdrop = false;
+        }
+        else
+        {
+            Backcontent = "True";
+            ShowBackdrop = true;
+        }
+        StateHasChanged();
+    }
+    // Specifies the event handler for Clicked event in Close Icon Element.
+    public void Close()
+    {
+        SidebarToggle = false;
+    }
+    // Specifies the event handler for Change event in Dropdown List component.
+    public void OnChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, typeData> args)
+    {
+        if (args.Value.ToString() == "Over")
+        {
+            Type = SidebarType.Over;
+        }
+        else if (args.Value.ToString() == "Push")
+        {
+            Type = SidebarType.Push;
+        }
+        else
+        {
+            Type = SidebarType.Auto;
+        }
+    }
+}
+<style>
+
+    .e-sidebar {
+        background-color: #f8f8f8;
+        color: black;
+    }
+
+    .text-content {
+        font-size: 1.5rem;
+        padding: 3rem;
+    }
+
+    .main > div {
+        padding: 0px !important;
+    }
+
+
+    /* specifies the custom code styles */
+    .inline-element {
+        display: inline-block;
+    }
+    .center-align {
+        text-align: center;
+        padding: 20px;
+    }
+    .title {
+        font-weight: 500;
+        line-height: 24px;
+        font-size: 18px;
+        margin-top: 0;
+    }
+    .e-display-none {
+        display: none;
+    }
+    .inline-element.right.e-btn {
+        border: none;
+        width: 80px;
+    }
+    .inline-element.right {
+        width: 80px;
+    }
+    .e-bigger .inline-element.right {
+        width: 85px;
+    }
+    .e-content-animation .inline-element .e-input-group.e-control-wrapper.e-ddl .e-dropdownlist.e-input[readonly] {
+        padding-left: 12px;
+    }
+    .right {
+        float: right;
+    }
+    #wrapper .list-group-item {
+        border: none;
+        padding: 15px;
+        font-size: 14px;
+        background: transparent;
+    }
+    /* Specifies the styles for Sidebar component */
+    .content {
+        margin-bottom: 20px;
+        overflow-y: auto;
+    }
+    .title-header {
+        font-size: 18px;
+        padding-bottom: 15px;
+    }
+    .sub-title {
+        font-size: 16px;
+    }
+    .e-sidebar .title-header #close {
+        cursor: pointer;
+        line-height: 25px;
+        font-size: 14px;
+        float: right;
+    }
+    #wrapper .default-sidebar {
+        padding: 15px;
+    }
+    #wrapper .default-sidebar {
+        z-index: 20 !important;
+    }
+    .container-fluid {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    #hamburger.menu {
+        font-size: 24px;
+        cursor: pointer;
+        float: left;
+        margin-right: 10px
+    }
+    #hamburger.menu:before {
+        content: '\e914';
+        font-family: 'sbicons'
+    }
+    #wrapper #close:before {
+        content: "\e109";
+    }
+    /* Specifies the custom generated icons styles */
+    @@font-face {
+        font-family: 'e-icons';
+        src: url(data:application/x-font-ttf;charset=utf-8;base64,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) format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+    .material .default-sidebar {
+        border-right: 1px solid rgba(0,0,0,0.12) !important;
+    }
+    .fabric .default-sidebar {
+        border-right: 1px solid #eaeaea !important;
+    }
+    .tailwind .default-sidebar {
+        border-right: 1px solid #d7d7d7 !important;
+    }
+    .bootstrap5-dark .default-sidebar {
+        border-right: 1px solid #444c54 !important;
+    }
+    .bootstrap5 .default-sidebar {
+        border-right: 1px solid #dee2e6 !important;
+    }
+    .material-dark .default-sidebar {
+        border-right: 1px solid #616161 !important;
+    }
+    .fabric-dark .default-sidebar {
+        border-right: 1px solid #414040 !important;
+    }
+    .tailwind-dark .default-sidebar {
+        border-right: 1px solid #4b5563 !important;
+    }
+</style>
+
+
